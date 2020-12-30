@@ -14,5 +14,9 @@ jobs:
     - name: Setup project
       run: make setup
 
+    - uses: harmon758/postgresql-action@v1
+      with:
+        postgresql version: '11'
+
     - name: Check lint
       run: make lint
