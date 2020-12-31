@@ -18,8 +18,4 @@ jobs:
       run: make lint
 
     - name: Run tests
-      env:
-          DB_DATABASE: test_db
-          DB_USERNAME: test_user
-          DB_PASSWORD: test
       run: make test
