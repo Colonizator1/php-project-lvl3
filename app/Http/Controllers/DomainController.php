@@ -12,13 +12,22 @@ class DomainController extends Controller
     public $tableName = 'domains';
     public function index(Request $request)
     {
-        $domains = DB::table($this->tableName)->get();
+        $latestChecks = DB::table('domain_checks')
+            ->select('domain_id', DB::raw('MAX(created_at) as last_domain_check'))
+            ->groupBy('domain_id');
+
+        $domains = DB::table($this->tableName)
+            ->leftJoinSub($latestChecks, 'latest_checks', function ($join) {
+                $join->on('domains.id', '=', 'latest_checks.domain_id');
+            })->get();
+
         return view('domains.index', ['domains' => $domains]);
     }
     public function show($id)
     {
         $domain = DB::table($this->tableName)->find($id);
-        return view('domains.show', ['domain' => $domain]);
+        $domainChecks = DB::table('domain_checks')->where('domain_id', $id)->get();
+        return view('domains.show', ['domain' => $domain, 'domainChecks' => $domainChecks]);
     }
     public function store(Request $request)
     {

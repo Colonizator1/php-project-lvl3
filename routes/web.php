@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DomainController;
+use App\Http\Controllers\DomainCheckController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,3 +29,6 @@ Route::get('domains/{id}', [DomainController::class, 'show'])
 
 Route::delete('domains/{id}', [DomainController::class, 'destroy'])
     ->name('domains.destroy');
+
+Route::post('domains/{id}/checks', [DomainCheckController::class, 'store'])
+    ->name('domains_check.store');

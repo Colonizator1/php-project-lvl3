@@ -7,6 +7,7 @@
     @foreach($domains as $domain)
         <li class="list-group-item">
             <a href="{{route('domains.show', ['id' => $domain->id])}}">{{$domain->name}}</a>
+            <span>Date: {{$domain->last_domain_check}}</span>
             <a href="{{route('domains.destroy', ['id' => $domain->id])}}" data-confirm="Вы уверены?" data-method="delete" rel="nofollow">Удалить</a>
         </li>
     @endforeach

@@ -20,7 +20,7 @@ class DomainTest extends TestCase
     public function testShow()
     {
         $domainInsertedId = DB::table('domains')->insertGetId([
-            'name' => Factory::create()->url(),
+            'name' => Factory::create()->domainName(),
         ]);
         $response = $this->get(route('domains.show', ['id' => $domainInsertedId]));
         $response->assertOk();
@@ -29,7 +29,7 @@ class DomainTest extends TestCase
     {
         $data = [];
         for ($i = 0; $i < 10; $i++) {
-            $data[] = ['name' => Factory::create()->url()];
+            $data[] = ['name' => Factory::create()->domainName()];
             $data[] = ['name' => Factory::create()->domainName()];
         }
         DB::table('domains')->insert($data);
@@ -42,7 +42,7 @@ class DomainTest extends TestCase
 
     public function testStore()
     {
-        $data = ['domain' => ['name' => Factory::create()->url()]];
+        $data = ['domain' => ['name' => Factory::create()->domainName()]];
         $response = $this->post(route('domains.store'), $data);
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
@@ -53,7 +53,7 @@ class DomainTest extends TestCase
     public function testDestroy()
     {
         $domainInsertedId = DB::table('domains')->insertGetId([
-            'name' => Factory::create()->url(),
+            'name' => Factory::create()->domainName(),
         ]);
         $response = $this->delete(route('domains.destroy', [$domainInsertedId]));
         $response->assertSessionHasNoErrors();
