@@ -14,6 +14,14 @@ jobs:
     - name: Setup project
       run: make setup
 
+    - name: Migrate
+      env:
+          DB_CONNECTION: pgsql
+          DB_DATABASE: test_db
+          DB_USERNAME: test_user
+          DB_PASSWORD: test
+      run: make migrate
+
     - name: Check lint
       run: make lint
 
