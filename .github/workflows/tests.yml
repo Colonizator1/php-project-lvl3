@@ -17,6 +17,8 @@ jobs:
     - name: Migrate
       env:
           DB_CONNECTION: pgsql
+          DB_HOST: localhost
+          DB_PORT: 5432
           DB_DATABASE: test_db
           DB_USERNAME: test_user
           DB_PASSWORD: test
