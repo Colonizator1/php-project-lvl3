@@ -24,7 +24,6 @@ class DomainController extends Controller
     {
         $data = $this->validate($request, [
             'domain.name' => [
-                'required',
                 'unique:domains,name',
                 'max:255',
                 function ($attribute, $value, $fail) {

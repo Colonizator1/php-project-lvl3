@@ -2,9 +2,11 @@ setup:
 	composer install
 	cp -n .env.example .env|| true
 	php artisan key:gen --ansi
-	#touch database/database.sqlite
-	#php artisan migrate
-	#php artisan db:seed
+	sudo systemctl start postgresql.service
+    pg_isready
+	sudo -u postgres psql --command="CREATE USER test_user PASSWORD 'test'" --command="\du"
+	sudo -u postgres createdb --owner=test_user test_db
+	php artisan migrate
 	npm install
 
 watch:

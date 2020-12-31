@@ -1,4 +1,4 @@
-name: linter
+name: tests
 
 on:
   push:
@@ -14,9 +14,12 @@ jobs:
     - name: Setup project
       run: make setup
 
-    - uses: harmon758/postgresql-action@v1
-      with:
-        postgresql version: '11'
-
     - name: Check lint
       run: make lint
+
+    - name: Run tests
+      env:
+          DB_DATABASE=test_db
+          DB_USERNAME=test_user
+          DB_PASSWORD=test
+      run: make test
