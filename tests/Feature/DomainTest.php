@@ -17,7 +17,14 @@ class DomainTest extends TestCase
         $response = $this->get(route('home'));
         $response->assertOk();
     }
-
+    public function testShow()
+    {
+        $domainInsertedId = DB::table('domains')->insertGetId([
+            'name' => Factory::create()->url(),
+        ]);
+        $response = $this->get(route('domains.show', ['id' => $domainInsertedId]));
+        $response->assertOk();
+    }
     public function testIndex()
     {
         $data = [];
