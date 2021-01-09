@@ -6,21 +6,33 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use DiDom\Document;
+use App\Jobs\CheckDomainJob;
 
 class DomainCheckController extends Controller
 {
-    public $tableName = 'domain_checks';
+    public const CHECK_TIMEOUT_SECOND = 3;
+
+    private static $tableName = 'domain_checks';
+
+    public static function getTableName()
+    {
+        return self::$tableName;
+    }
+
     public function store(Request $request, $domainId)
     {
-        // Log::info(dump($request));
-        // Log::info(dump($domainId));
+        $checkData['domain_id'] = $domainId;
         $currentTime = Carbon::now()->toString();
-        $data['domain_id'] = $domainId;
-        $data['created_at'] = $currentTime;
-        $data['updated_at'] = $currentTime;
-        if (DB::table($this->tableName)->insert($data)) {
-            $request->session()->flash('info', 'Website has been checked!');
-        };
+        $checkData['created_at'] = $currentTime;
+        $checkData['updated_at'] = $currentTime;
+        $checkData['status'] = 'pending';
+        $newCheckId = DB::table(self::$tableName)->insertGetId($checkData);
+        $domain = DB::table(DomainController::getTableName())->find($domainId);
+
+        dispatch(new CheckDomainJob($domain->name, $newCheckId));
+        $request->session()->flash('info', 'Site will be checked soon!');
         return redirect()->route('domains.show', ['id' => $domainId]);
     }
 }

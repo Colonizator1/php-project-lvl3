@@ -15,7 +15,7 @@
         {{ Form::open(['url' => route('domains.store')]) }}
             <div class="form-row">
                 <div class="col-12 col-md-9 mb-2 mb-md-0">
-                    {{Form::text('domain[name]', 'example.com', ['class' => 'form-control form-control-lg'])}}
+                    {{Form::text('domain[name]', old('domain[name]'), ['class' => 'form-control form-control-lg', 'placeholder' => 'example.com'])}}
                 </div>
                 <div class="col-12 col-md-3">
                     {{Form::submit('Check', ['class' => 'btn btn-block btn-lg btn-primary'])}}

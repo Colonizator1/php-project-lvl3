@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Faker\Factory;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\DomainController;
 
 class DomainTest extends TestCase
 {
@@ -19,7 +20,7 @@ class DomainTest extends TestCase
     }
     public function testShow()
     {
-        $domainInsertedId = DB::table('domains')->insertGetId([
+        $domainInsertedId = DB::table(DomainController::getTableName())->insertGetId([
             'name' => Factory::create()->domainName(),
         ]);
         $response = $this->get(route('domains.show', ['id' => $domainInsertedId]));
@@ -32,7 +33,7 @@ class DomainTest extends TestCase
             $data[] = ['name' => Factory::create()->domainName()];
             $data[] = ['name' => Factory::create()->domainName()];
         }
-        DB::table('domains')->insert($data);
+        DB::table(DomainController::getTableName())->insert($data);
         $response = $this->get(route('domains.index'));
         $response->assertOk();
         foreach ($data as $domain) {
@@ -47,18 +48,18 @@ class DomainTest extends TestCase
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
 
-        $this->assertDatabaseHas('domains', $data['domain']);
+        $this->assertDatabaseHas(DomainController::getTableName(), $data['domain']);
     }
 
     public function testDestroy()
     {
-        $domainInsertedId = DB::table('domains')->insertGetId([
+        $domainInsertedId = DB::table(DomainController::getTableName())->insertGetId([
             'name' => Factory::create()->domainName(),
         ]);
         $response = $this->delete(route('domains.destroy', [$domainInsertedId]));
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
 
-        $this->assertDatabaseMissing('domains', ['id' => $domainInsertedId]);
+        $this->assertDatabaseMissing(DomainController::getTableName(), ['id' => $domainInsertedId]);
     }
 }

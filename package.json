@@ -11,7 +11,7 @@
         "heroku-postbuild": "npm run production"
     },
     "devDependencies": {
-        "axios": "^0.19",
+        "axios": "^0.21.1",
         "bootstrap": "^4.0.0",
         "cross-env": "^7.0",
         "jquery": "^3.2",
@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.15.1",
         "@rails/ujs": "^6.1.0",
         "bootstrap": "^4.5.3"
     }
