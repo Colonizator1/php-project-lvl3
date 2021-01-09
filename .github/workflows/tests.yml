@@ -35,4 +35,5 @@ jobs:
             DB_DATABASE: test_db
             DB_USERNAME: test_user
             DB_PASSWORD: test
+            QUEUE_CONNECTION: database
       run: make test
