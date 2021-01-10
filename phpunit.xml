@@ -28,7 +28,7 @@
         <server name="SESSION_DRIVER" value="array"/>
         <server name="TELESCOPE_ENABLED" value="false"/>
     </php>
-    <logging>
+    <!-- <logging>
         <junit outputFile="coverage.xml"/>
-    </logging>
+    </logging> -->
 </phpunit>
