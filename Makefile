@@ -22,7 +22,7 @@ log:
 test:
 	php artisan test
 
-test_cover
+test_cover:
 	composer phpunit -- --coverage-clover ./coverage.xml
 
 deploy:
