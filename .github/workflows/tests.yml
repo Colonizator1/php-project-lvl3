@@ -42,6 +42,13 @@ jobs:
       uses: paambaati/codeclimate-action@v2.7.5
       env:
         CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+        DB_CONNECTION: pgsql
+        DB_HOST: localhost
+        DB_PORT: 5432
+        DB_DATABASE: test_db
+        DB_USERNAME: test_user
+        DB_PASSWORD: test
+        QUEUE_CONNECTION: database
       with:
         coverageCommand: make test_cover
         coverageLocations: ${{github.workspace}}/coverage.xml
