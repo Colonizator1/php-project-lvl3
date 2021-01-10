@@ -61,11 +61,11 @@ class DomainController extends Controller
         $currentTime = Carbon::now()->toString();
         $data['domain']['created_at'] = $currentTime;
         $data['domain']['updated_at'] = $currentTime;
-
-        if (DB::table(self::$tableName)->insert($data)) {
+        $newDomainId = DB::table(self::$tableName)->insertGetId($data['domain']);
+        if (\is_integer($newDomainId)) {
             $request->session()->flash('success', 'Domain added successfully!');
         };
-        return redirect()->route('domains.index');
+        return redirect()->route('domains.show', $newDomainId);
     }
     public function destroy($id)
     {

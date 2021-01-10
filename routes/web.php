@@ -18,7 +18,7 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
-Route::post('/', [DomainController::class, 'store'])
+Route::post('domains', [DomainController::class, 'store'])
     ->name('domains.store');
 
 Route::get('domains', [DomainController::class, 'index'])
