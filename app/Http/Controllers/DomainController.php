@@ -38,6 +38,9 @@ class DomainController extends Controller
     public function show($id)
     {
         $domain = DB::table(self::$tableName)->find($id);
+        if ($domain === null) {
+            return abort(404);
+        }
         $domainChecks = DB::table(DomainCheckController::getTableName())->where('domain_id', $id)->get();
         return view('domains.show', ['domain' => $domain, 'domainChecks' => $domainChecks]);
     }
@@ -54,18 +57,28 @@ class DomainController extends Controller
                 }
             ],
         ];
-        $data = Validator::make($request->all(), $rules, $messages = [
+        $validator = Validator::make($request->all(), $rules, $messages = [
             'unique' => 'Url :input has already been taken.',
             'max' => 'Url may not be greater than 255 characters.'
-        ])->validate();
+        ]);
+        $errors = $validator->errors();
+        $failedRules = $validator->failed();
+        Log::debug(\dump($failedRules));
+        Log::debug(\dump($errors));
+        if ($failedRules && collect($failedRules['domain.name'])->has('Unique')) {
+            $duplicateDomainId = DB::table(self::$tableName)->where('name', $request['domain']['name'])->value('id');
+            return redirect()->route('domains.show', ['domain' => $duplicateDomainId])->withErrors($validator);
+        }
+        $data = $validator->validate();
         $currentTime = Carbon::now()->toString();
         $data['domain']['created_at'] = $currentTime;
         $data['domain']['updated_at'] = $currentTime;
         $newDomainId = DB::table(self::$tableName)->insertGetId($data['domain']);
         if (\is_integer($newDomainId)) {
-            $request->session()->flash('success', 'Domain added successfully!');
+            flash('Domain added successfully!')->success();
+            // $request->session()->flash('success', 'Domain added successfully!');
         };
-        return redirect()->route('domains.show', $newDomainId);
+        return redirect()->route('domains.show', ['domain' => $newDomainId]);
     }
     public function destroy($id)
     {

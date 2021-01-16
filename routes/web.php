@@ -18,17 +18,8 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
-Route::post('domains', [DomainController::class, 'store'])
-    ->name('domains.store');
-
-Route::get('domains', [DomainController::class, 'index'])
-    ->name('domains.index');
-
-Route::get('domains/{id}', [DomainController::class, 'show'])
-    ->name('domains.show');
-
-Route::delete('domains/{id}', [DomainController::class, 'destroy'])
-    ->name('domains.destroy');
-
+Route::resource('domains', DomainController::class)->except([
+   'create', 'update', 'edit'
+]);
 Route::post('domains/{id}/checks', [DomainCheckController::class, 'store'])
-    ->name('domains_check.store');
+    ->name('domains.checks.store');

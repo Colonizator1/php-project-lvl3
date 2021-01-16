@@ -8,6 +8,25 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test_db
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
     steps:
     - uses: actions/checkout@v1
 
@@ -15,40 +34,18 @@ jobs:
       run: make setup
 
     - name: Migrate
-      env:
-          DB_CONNECTION: pgsql
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_DATABASE: test_db
-          DB_USERNAME: test_user
-          DB_PASSWORD: test
       run: make migrate
 
     - name: Check lint
       run: make lint
 
     - name: Run tests
-      env:
-            DB_CONNECTION: pgsql
-            DB_HOST: localhost
-            DB_PORT: 5432
-            DB_DATABASE: test_db
-            DB_USERNAME: test_user
-            DB_PASSWORD: test
-            QUEUE_CONNECTION: database
       run: make test
 
     - name: Test & publish code coverage
       uses: paambaati/codeclimate-action@v2.7.5
       env:
         CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
-        DB_CONNECTION: pgsql
-        DB_HOST: localhost
-        DB_PORT: 5432
-        DB_DATABASE: test_db
-        DB_USERNAME: test_user
-        DB_PASSWORD: test
-        QUEUE_CONNECTION: database
       with:
         coverageCommand: make test_cover
         coverageLocations: ${{github.workspace}}/coverage.xml

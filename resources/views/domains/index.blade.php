@@ -19,20 +19,16 @@
         @foreach($domains as $domain)
             <tr>
                 <td>{{$domain->id}}</td>
-                <td><a href="{{route('domains.show', ['id' => $domain->id])}}">{{$domain->name}}</a></td>
+                <td><a href="{{route('domains.show', ['domain' => $domain->id])}}">{{$domain->name}}</a></td>
                 <td>
-                    @if ($domain->last_domain_check !== null)
-                        Date: {{$domain->last_domain_check}}
-                    @endif
+                    {{optional($domain)->last_domain_check}}
                 </td>
                 <td>
-                    @if ($domain->status_code !== null)
-                        Status: {{$domain->status_code}}
-                    @endif
+                    {{optional($domain)->status_code}}
                 </td>
                 <td>
                     <i class="far fa-trash-alt"></i>
-                    <a href="{{route('domains.destroy', ['id' => $domain->id])}}" data-confirm="Вы уверены?" data-method="delete" rel="nofollow">Удалить</a>
+                    <a href="{{route('domains.destroy', ['domain' => $domain->id])}}" data-confirm="Are you sure?" data-method="delete" rel="nofollow">Delete</a>
                 </td>
             </tr>
         @endforeach

@@ -11,8 +11,7 @@
     <body>
         <!-- Navigation -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light nav-pills">
-            
-            <a class="nav-link @if (url()->current() === route('home')) active @endif" href="/">Home</a>
+            <a class="nav-link @if (url()->current() === route('home')) active @endif" href="{{route('home')}}">Home</a>
             <a class="nav-link @if (url()->current() === route('domains.index')) active @endif" href="{{route('domains.index')}}">Domains</a>
         </nav>
         @if ($errors->any())
@@ -22,11 +21,7 @@
                 @endforeach
             </div>
         @endif
-        @foreach (['danger', 'warning', 'success', 'info'] as $key)
-            @if(Session::has($key))
-                <p class="alert alert-{{ $key }}">{{ Session::get($key) }}</p>
-            @endif
-        @endforeach
+        @include('flash::message');
         @yield('content')
         <footer class="footer bg-light">
             <div class="container">

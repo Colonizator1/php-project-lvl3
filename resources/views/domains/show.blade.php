@@ -1,31 +1,31 @@
 @extends('layouts.app')
 
 @section('title')
-    Url {{$domain->name}}
+    Url {{optional($domain)->name}}
 @endsection
 
 @section('content')
 <div class="container-lg">
-    <h1 class="mt-5 mb-3">Url: {{$domain->name}}</h1>
+    <h1 class="mt-5 mb-3">Url: {{optional($domain)->name}}</h1>
     <table class="table table-hover">
         <tr>
-            <td>id</td><td>{{$domain->id}}</td>
+            <td>id</td><td>{{optional($domain)->id}}</td>
         </tr>
         <tr>
-            <td>url</td><td>{{$domain->name}}</td>
+            <td>url</td><td>{{optional($domain)->name}}</td>
         </tr>
         <tr>
-            <td>created_at</td><td>{{$domain->created_at}}</td>
+            <td>created_at</td><td>{{optional($domain)->created_at}}</td>
         </tr>
         <tr>
-            <td>updated_at</td><td>{{$domain->updated_at}}</td>
+            <td>updated_at</td><td>{{optional($domain)->updated_at}}</td>
         </tr>
     </table>
     <h2 class="mt-5 mb-3">Checks</h2>
-    {{ Form::open(['url' => route('domains_check.store', $domain->id)]) }}
+    {{ Form::open(['url' => route('domains.checks.store', optional($domain)->id)]) }}
         <div class="form-row">
             <div class="col-12 col-md-3">
-                {{Form::hidden('domainName', $domain->name)}}
+                {{Form::hidden('domainName', optional($domain)->name)}}
                 {{Form::submit('Run check', ['class' => 'btn btn-block btn-lg btn-primary'])}}
             </div>
         </div>
@@ -45,14 +45,16 @@
             </thead>
             <tbody>
             @foreach($domainChecks as $check)
-                <tr>
+                <tr id="check-id-{{$check->id}}">
                     <td>{{$check->id}}</td>
                     @switch($check->status)
                         @case('pending')
-                            <td colspan="4" class='alert alert-warning'>Waiting for checking site...</td>
+                            <td id='pending-{{$check->id}}' colspan="4" class='alert alert-warning'>
+                                <div class="spinner-border spinner-border-sm text-warning" role="status"></div> Waiting for checking site...
+                            </td>
                             @break
                         @case('failed')
-                            <td colspan="4" class='alert alert-danger'>Check failed...</td>
+                            <td colspan="4" class='alert alert-danger'>Сheck failed! Can't connect for 10 sec</td>
                             @break
                         @default
                             <td>{{$check->status_code}}</td>
@@ -61,7 +63,7 @@
                             <td>{{$check->description}}</td>
                     @endswitch
                     <td>{{$check->created_at}}</td>
-                    <td>{{$check->updated_at}}</td>
+                    <td id='updated_at-{{$check->id}}'>{{$check->updated_at}}</td>
                 </tr>
             @endforeach
             </tbody>

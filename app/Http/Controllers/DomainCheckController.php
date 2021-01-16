@@ -32,7 +32,7 @@ class DomainCheckController extends Controller
         $domain = DB::table(DomainController::getTableName())->find($domainId);
 
         dispatch(new CheckDomainJob($domain->name, $newCheckId));
-        $request->session()->flash('info', 'Site will be checked soon! Return to this page later...');
-        return redirect()->route('domains.show', ['id' => $domainId]);
+        flash('Site will be checked soon! Please wait or return to this page later...')->info()->important();
+        return redirect()->route('domains.show', ['domain' => $domainId]);
     }
 }

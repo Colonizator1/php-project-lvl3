@@ -13,6 +13,8 @@ use DiDom\Document;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\DomainCheckController;
+use App\Events\DomainCheckUpdated;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class CheckDomainJob implements ShouldQueue
@@ -51,13 +53,18 @@ class CheckDomainJob implements ShouldQueue
     {
         $domainResponse = Http::timeout(10)->get($this->domainName);
         $dom = new Document($domainResponse->body());
+
         if ($dom->has('meta[name=keywords]')) {
+            Log::info(dump($dom->find('meta[name=keywords]')));
             $data['keywords'] = $dom->find('meta[name=keywords]')[0]->getAttribute('content');
         }
         if ($dom->has('meta[name=description]')) {
+            Log::info(dump($dom->find('meta[name=description]')));
             $data['description'] = $dom->find('meta[name=description]')[0]->getAttribute('content');
         }
         if ($dom->has('h1')) {
+            Log::info('has h1');
+            Log::info(dump($dom->find('h1')));
             $data['h1'] = $dom->find('h1')[0]->text();
         }
 
@@ -69,6 +76,11 @@ class CheckDomainJob implements ShouldQueue
         DB::table(DomainCheckController::getTableName())
             ->where('id', $this->domainCheckId)
             ->update($data);
+        $domainCheck = DB::table(DomainCheckController::getTableName())->find($this->domainCheckId);
+        if ($domainCheck) {
+            DomainCheckUpdated::dispatch($domainCheck);
+            flash('Domain checked successfully!')->success()->important();
+        }
     }
 
     /**
@@ -79,8 +91,13 @@ class CheckDomainJob implements ShouldQueue
      */
     public function failed(Throwable $exception)
     {
+        Log::info(\dump($exception));
         DB::table(DomainCheckController::getTableName())
             ->where('id', $this->domainCheckId)
             ->update(['status' => 'failed']);
+        $domainCheck = DB::table(DomainCheckController::getTableName())->find($this->domainCheckId);
+        if ($domainCheck) {
+            DomainCheckUpdated::dispatch($domainCheck, $exception);
+        }
     }
 }

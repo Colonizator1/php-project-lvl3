@@ -22,7 +22,7 @@ class DomainsCheckTest extends TestCase
             'name' => $domainName,
         ]);
 
-        $response = $this->post(route('domains_check.store', $domainInsertedId));
+        $response = $this->post(route('domains.checks.store', $domainInsertedId));
         Queue::assertPushed(CheckDomainJob::class, function ($job) use ($domainName) {
             return $job->domainName === $domainName;
         });

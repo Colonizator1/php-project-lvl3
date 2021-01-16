@@ -23,7 +23,7 @@ class DomainTest extends TestCase
         $domainInsertedId = DB::table(DomainController::getTableName())->insertGetId([
             'name' => Factory::create()->domainName(),
         ]);
-        $response = $this->get(route('domains.show', ['id' => $domainInsertedId]));
+        $response = $this->get(route('domains.show', ['domain' => $domainInsertedId]));
         $response->assertOk();
     }
     public function testIndex()
