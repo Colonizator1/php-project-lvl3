@@ -41,7 +41,6 @@ class DomainController extends Controller
     {
         $rules = [
             'domain.name' => [
-                'unique:domains,name',
                 'max:255',
                 function ($attribute, $value, $fail) {
                     if (!$this->isValidUrl($value)) {
@@ -51,14 +50,13 @@ class DomainController extends Controller
             ],
         ];
         $validator = Validator::make($request->all(), $rules, $messages = [
-            'unique' => 'Url :input has already been taken.',
             'max' => 'Url may not be greater than 255 characters.'
         ]);
-        $errors = $validator->errors();
-        $failedRules = $validator->failed();
-        if ($failedRules && collect($failedRules['domain.name'])->has('Unique')) {
-            $duplicateDomainId = DB::table(self::$tableName)->where('name', $request['domain']['name'])->value('id');
-            return redirect()->route('domains.show', ['domain' => $duplicateDomainId])->withErrors($validator);
+        $duplicateDomain = DB::table(self::$tableName)->where('name', $request['domain']['name']);
+        if ($duplicateDomain->first()) {
+            $duplicateDomainId = $duplicateDomain->value('id');
+            flash('Url ' . $request['domain']['name'] . ' has already been taken.')->warning();
+            return redirect()->route('domains.show', ['domain' => $duplicateDomainId]);
         }
         $data = $validator->validate();
         $currentTime = Carbon::now()->toString();
