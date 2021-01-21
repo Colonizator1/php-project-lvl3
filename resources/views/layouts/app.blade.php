@@ -11,8 +11,8 @@
     <body>
         <!-- Navigation -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light nav-pills">
-            <a class="nav-link @if (url()->current() === route('home')) active @endif" href="{{route('home')}}">Home</a>
-            <a class="nav-link @if (url()->current() === route('domains.index')) active @endif" href="{{route('domains.index')}}">Domains</a>
+            <a class="nav-link {{ Template::setClassForActiveRoute(route('home')) }}" href="{{route('home')}}">Home</a>
+            <a class="nav-link {{ Template::setClassForActiveRoute(route('domains.index')) }}" href="{{route('domains.index')}}">Domains</a>
         </nav>
         @if ($errors->any())
             <div>

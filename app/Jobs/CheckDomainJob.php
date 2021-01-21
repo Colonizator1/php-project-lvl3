@@ -13,7 +13,6 @@ use DiDom\Document;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\DomainCheckController;
-use App\Events\DomainCheckUpdated;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -78,7 +77,6 @@ class CheckDomainJob implements ShouldQueue
             ->update($data);
         $domainCheck = DB::table(DomainCheckController::getTableName())->find($this->domainCheckId);
         if ($domainCheck) {
-            DomainCheckUpdated::dispatch($domainCheck);
             flash('Domain checked successfully!')->success()->important();
         }
     }
@@ -97,7 +95,7 @@ class CheckDomainJob implements ShouldQueue
             ->update(['status' => 'failed']);
         $domainCheck = DB::table(DomainCheckController::getTableName())->find($this->domainCheckId);
         if ($domainCheck) {
-            DomainCheckUpdated::dispatch($domainCheck, $exception);
+            flash('Domain check failed!')->success()->important();
         }
     }
 }

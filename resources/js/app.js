@@ -1,45 +1,39 @@
 require('./bootstrap');
 const ujs = require('@rails/ujs');
 ujs.start();
-Echo.channel(`domain_check_update_channel`)
-    .listen('DomainCheckUpdated', (e) => {
-        console.log(e);
-        let content = e.domainCheckData;
-        let messageBox = document.getElementsByClassName('alert alert-info alert-important').item(0);
-        console.log(messageBox);
-        messageBox.innerHTML = 'Done!'
-        
-        if (content.status === 'failed') {
-            let peddingCell = document.getElementById('pending-' + e.domainCheckData.id);
-            peddingCell.textContent = "Сheck failed! Can\'t connect for 10 sec";
-            peddingCell.removeAttribute("class");
-            peddingCell.classList.add('alert');
-            peddingCell.classList.add('alert-danger');
-            messageBox.classList.replace('alert-info', 'alert-danger');
-            return;
+const options = {
+    method: 'GET',
+};
+// repeat every 1 sec
+const timerId = setInterval(() => fetch(window.location.href, options)
+    .then(async (response) => {
+        if (response.status == 200) {
+            const htmlFromServer = await response.text();
+            const domparser = new DOMParser();
+            const docFromServer = domparser.parseFromString(htmlFromServer, 'text/html');
+            const rowsFromClient = document.getElementById("checks_table").getElementsByTagName("tr");
+            
+            let stack = [];
+            for (let tr of rowsFromClient) {
+                if (tr.dataset.status === 'pending') {
+                    stack.push(1);
+                    if (docFromServer.getElementById("check-id-" + tr.dataset.id).dataset.status !== 'pending') {
+                        const checkedRowFromServer = docFromServer.getElementById("check-id-" + tr.dataset.id);
+                        console.log(checkedRowFromServer, 'success/failed row on server');
+                        tr.outerHTML = checkedRowFromServer.outerHTML;
+                        stack.pop();
+                    }
+                }
+            }
+            console.log(stack, 'stack');
+            if (stack.length === 0) {
+                const messageBox = document.getElementsByClassName('alert alert-info alert-important').item(0);
+                if (messageBox) {
+                    messageBox.innerHTML = 'Done!';
+                }
+                clearInterval(timerId);
+            }
         }
-        messageBox.classList.replace('alert-info', 'alert-success');
-        let peddingCell = document.getElementById('pending-' + e.domainCheckData.id);
-
-        peddingCell.textContent = content['status_code'] ? `${content['status_code']}` : '';
-        peddingCell.removeAttribute("colspan");
-        peddingCell.removeAttribute("class");
-
-        let h1Cell = document.createElement('td');
-        h1Cell.textContent = content['h1'] ? `${content['h1']}` : '';
-        peddingCell.insertAdjacentElement('afterend', h1Cell);
-
-        let keywordsCell = document.createElement('td');
-        keywordsCell.textContent = content['keywords'] ? `${content['keywords']}` : '';
-        h1Cell.insertAdjacentElement('afterend', keywordsCell);
-
-        let descriptionCell = document.createElement('td');
-        descriptionCell.textContent = content['description'] ? `${content['description']}` : '';
-        keywordsCell.insertAdjacentElement('afterend', descriptionCell);
-
-        let updatedAtCell = document.getElementById('updated_at-' + e.domainCheckData.id);
-        updatedAtCell.innerHTML = content['updated_at'] ? `${content['updated_at']}` : '';
-
-        
-        
-    });
+    })
+    .catch(console.error)
+, 1000);

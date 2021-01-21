@@ -19,20 +19,13 @@ class DomainController extends Controller
 
     public function index(Request $request)
     {
-        $latestChecks = DB::table(DomainCheckController::getTableName())
-            ->select('domain_id', DB::raw('MAX(created_at) as last_domain_check'))
-            ->groupBy('domain_id');
-        $domains = DB::table(self::$tableName)
-            ->leftJoinSub($latestChecks, 'latest_checks', function ($join) {
-                $join->on('domains.id', '=', 'latest_checks.domain_id');
-            })->leftJoin(DomainCheckController::getTableName(), function ($join) {
-                $join->on('latest_checks.last_domain_check', '=', DomainCheckController::getTableName() . '.created_at');
-            })->select(
-                self::$tableName . '.*',
-                'latest_checks.last_domain_check',
-                DomainCheckController::getTableName() . '.status_code'
-            )
-            ->get();
+        $allChecks = DB::table(DomainCheckController::getTableName())->get()->groupBy('domain_id')->map(function ($domainChecks, $domain_id) {
+            return $domainChecks->sortBy('created_at')->last();
+        });
+        $domains = DB::table(self::$tableName)->get()->map(function ($domain, $key) use ($allChecks) {
+            $domain->last_check = $allChecks[$domain->id];
+            return $domain;
+        });
         return view('domains.index', ['domains' => $domains]);
     }
     public function show($id)
@@ -63,8 +56,6 @@ class DomainController extends Controller
         ]);
         $errors = $validator->errors();
         $failedRules = $validator->failed();
-        Log::debug(\dump($failedRules));
-        Log::debug(\dump($errors));
         if ($failedRules && collect($failedRules['domain.name'])->has('Unique')) {
             $duplicateDomainId = DB::table(self::$tableName)->where('name', $request['domain']['name'])->value('id');
             return redirect()->route('domains.show', ['domain' => $duplicateDomainId])->withErrors($validator);
@@ -76,7 +67,6 @@ class DomainController extends Controller
         $newDomainId = DB::table(self::$tableName)->insertGetId($data['domain']);
         if (\is_integer($newDomainId)) {
             flash('Domain added successfully!')->success();
-            // $request->session()->flash('success', 'Domain added successfully!');
         };
         return redirect()->route('domains.show', ['domain' => $newDomainId]);
     }

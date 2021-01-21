@@ -31,7 +31,7 @@
         </div>
     {{ Form::close() }}
     @if (isset($domainChecks) && count($domainChecks) > 0)
-        <table class="table table-hover">
+        <table class="table table-hover" id='checks_table'>
             <thead>
                 <tr>
                     <th>ID</th>
@@ -45,7 +45,7 @@
             </thead>
             <tbody>
             @foreach($domainChecks as $check)
-                <tr id="check-id-{{$check->id}}">
+                <tr id="check-id-{{$check->id}}" data-status="{{$check->status}}" data-id="{{$check->id}}">
                     <td>{{$check->id}}</td>
                     @switch($check->status)
                         @case('pending')
