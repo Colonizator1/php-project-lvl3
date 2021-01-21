@@ -23,7 +23,7 @@ class DomainController extends Controller
             return $domainChecks->sortBy('created_at')->last();
         });
         $domains = DB::table(self::$tableName)->get()->map(function ($domain, $key) use ($allChecks) {
-            $domain->last_check = $allChecks[$domain->id];
+            $domain->last_check = $allChecks->has($domain->id) ? $allChecks[$domain->id] : null;
             return $domain;
         });
         return view('domains.index', ['domains' => $domains]);

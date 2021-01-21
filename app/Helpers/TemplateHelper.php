@@ -11,6 +11,6 @@ class TemplateHelper
 
     public static function setClassForActiveRoute($route, $class = 'active')
     {
-        return self::isActiveRoute($route) ? $class : ''; 
+        return self::isActiveRoute($route) ? $class : '';
     }
 }

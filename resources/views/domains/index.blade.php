@@ -21,10 +21,10 @@
                 <td>{{$domain->id}}</td>
                 <td><a href="{{route('domains.show', ['domain' => $domain->id])}}">{{$domain->name}}</a></td>
                 <td>
-                    {{optional($domain)->last_check->created_at}}
+                    {{optional($domain->last_check)->created_at}}
                 </td>
                 <td>
-                    {{optional($domain)->last_check->status_code}}
+                    {{optional($domain->last_check)->status_code}}
                 </td>
                 <td>
                     <i class="far fa-trash-alt"></i>
