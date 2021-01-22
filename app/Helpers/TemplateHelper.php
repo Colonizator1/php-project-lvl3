@@ -4,12 +4,12 @@ namespace App\Helpers;
 
 class TemplateHelper
 {
-    public static function isActiveRoute($route)
+    public static function isActiveRoute(string $route): bool
     {
         return $route === url()->current();
     }
 
-    public static function setClassForActiveRoute($route, $class = 'active')
+    public static function setClassForActiveRoute(string $route, string $class = 'active'): string
     {
         return self::isActiveRoute($route) ? $class : '';
     }

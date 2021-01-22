@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\Log;
 
 class DomainController extends Controller
 {
-    private static $tableName = 'domains';
+    private static String $tableName = 'domains';
 
-    public static function getTableName()
+    public static function getTableName(): string
     {
         return self::$tableName;
     }
 
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Contracts\View\View
     {
         $allChecks = DB::table(DomainCheckController::getTableName())->get()->groupBy('domain_id')->map(function ($domainChecks, $domain_id) {
             return $domainChecks->sortBy('created_at')->last();
@@ -28,16 +28,18 @@ class DomainController extends Controller
         });
         return view('domains.index', ['domains' => $domains]);
     }
-    public function show($id)
+
+    public function show(int $id): \Illuminate\Contracts\View\View
     {
         $domain = DB::table(self::$tableName)->find($id);
         if ($domain === null) {
-            return abort(404);
+            abort(404);
         }
         $domainChecks = DB::table(DomainCheckController::getTableName())->where('domain_id', $id)->get();
         return view('domains.show', ['domain' => $domain, 'domainChecks' => $domainChecks]);
     }
-    public function store(Request $request)
+
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $rules = [
             'domain.name' => [
@@ -53,7 +55,7 @@ class DomainController extends Controller
             'max' => 'Url may not be greater than 255 characters.'
         ]);
         $duplicateDomain = DB::table(self::$tableName)->where('name', $request['domain']['name']);
-        if ($duplicateDomain->first()) {
+        if ($duplicateDomain->first() !== null) {
             $duplicateDomainId = $duplicateDomain->value('id');
             flash('Url ' . $request['domain']['name'] . ' has already been taken.')->warning();
             return redirect()->route('domains.show', ['domain' => $duplicateDomainId]);
@@ -68,19 +70,18 @@ class DomainController extends Controller
         };
         return redirect()->route('domains.show', ['domain' => $newDomainId]);
     }
-    public function destroy($id)
+
+    public function destroy(int $id): \Illuminate\Http\RedirectResponse
     {
         $domain = DB::table(self::$tableName)->where('id', $id);
-        if ($domain) {
+        if ($domain !== null) {
             $domain->delete();
-        }
-        $domainChecks = DB::table(DomainCheckController::getTableName())->where('domain_id', $id);
-        if ($domainChecks) {
-            $domainChecks->delete();
+            $domainChecks = DB::table(DomainCheckController::getTableName())->where('domain_id', $id)->delete();
         }
         return redirect()->route('domains.index');
     }
-    protected function isValidUrl($url)
+
+    protected function isValidUrl(string $url): bool
     {
         $parse = parse_url($url);
         if (isset($parse['host'])) {
@@ -90,7 +91,8 @@ class DomainController extends Controller
         }
         return $this->isValidDomain($domain);
     }
-    protected function isValidDomain($domain)
+
+    protected function isValidDomain(string $domain): bool
     {
         return preg_match('/^(?!\-)(?:[a-zA-Z\d\-]{0,62}[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/', $domain);
     }

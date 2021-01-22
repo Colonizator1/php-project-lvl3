@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use Faker\Factory;
+use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
 use App\Jobs\CheckDomainJob;
@@ -14,10 +14,10 @@ use App\Http\Controllers\DomainCheckController;
 
 class DomainsCheckTest extends TestCase
 {
-    public function testStore()
+    public function testStore(): void
     {
         Queue::fake();
-        $domainName = Factory::create()->domainName();
+        $domainName = Faker::create()->domainName();
         $domainInsertedId = DB::table(DomainController::getTableName())->insertGetId([
             'name' => $domainName,
         ]);

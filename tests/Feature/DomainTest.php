@@ -13,12 +13,12 @@ class DomainTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testHome()
+    public function testHome(): void
     {
         $response = $this->get(route('home'));
         $response->assertOk();
     }
-    public function testShow()
+    public function testShow(): void
     {
         $domainInsertedId = DB::table(DomainController::getTableName())->insertGetId([
             'name' => Factory::create()->domainName(),
@@ -26,7 +26,7 @@ class DomainTest extends TestCase
         $response = $this->get(route('domains.show', ['domain' => $domainInsertedId]));
         $response->assertOk();
     }
-    public function testIndex()
+    public function testIndex(): void
     {
         $data = [];
         for ($i = 0; $i < 10; $i++) {
@@ -41,7 +41,7 @@ class DomainTest extends TestCase
         }
     }
 
-    public function testStore()
+    public function testStore(): void
     {
         $data = ['domain' => ['name' => Factory::create()->domainName()]];
         $response = $this->post(route('domains.store'), $data);
@@ -51,7 +51,7 @@ class DomainTest extends TestCase
         $this->assertDatabaseHas(DomainController::getTableName(), $data['domain']);
     }
 
-    public function testDestroy()
+    public function testDestroy(): void
     {
         $domainInsertedId = DB::table(DomainController::getTableName())->insertGetId([
             'name' => Factory::create()->domainName(),

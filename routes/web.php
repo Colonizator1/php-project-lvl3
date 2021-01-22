@@ -14,7 +14,7 @@ use App\Http\Controllers\DomainCheckController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/', function () {
+Route::get('/', function (): Illuminate\View\View {
     return view('home');
 })->name('home');
 

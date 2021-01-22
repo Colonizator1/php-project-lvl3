@@ -30,8 +30,8 @@ class CheckDomainJob implements ShouldQueue
      */
     public $tries = 3;
 
-    public $domainName;
-    public $domainCheckId;
+    public String $domainName;
+    public Int $domainCheckId;
     /**
      * Create a new job instance.
      *
@@ -76,7 +76,7 @@ class CheckDomainJob implements ShouldQueue
             ->where('id', $this->domainCheckId)
             ->update($data);
         $domainCheck = DB::table(DomainCheckController::getTableName())->find($this->domainCheckId);
-        if ($domainCheck) {
+        if ($domainCheck !== null) {
             flash('Domain checked successfully!')->success()->important();
         }
     }
@@ -94,7 +94,7 @@ class CheckDomainJob implements ShouldQueue
             ->where('id', $this->domainCheckId)
             ->update(['status' => 'failed']);
         $domainCheck = DB::table(DomainCheckController::getTableName())->find($this->domainCheckId);
-        if ($domainCheck) {
+        if ($domainCheck !== null) {
             flash('Domain check failed!')->success()->important();
         }
     }

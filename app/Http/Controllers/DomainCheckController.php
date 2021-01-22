@@ -14,14 +14,14 @@ class DomainCheckController extends Controller
 {
     public const CHECK_TIMEOUT_SECOND = 3;
 
-    private static $tableName = 'domain_checks';
+    private static String $tableName = 'domain_checks';
 
-    public static function getTableName()
+    public static function getTableName(): string
     {
         return self::$tableName;
     }
 
-    public function store(Request $request, $domainId)
+    public function store(Request $request, int $domainId): \Illuminate\Http\RedirectResponse
     {
         $checkData['domain_id'] = $domainId;
         $currentTime = Carbon::now()->toString();
