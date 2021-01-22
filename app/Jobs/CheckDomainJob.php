@@ -54,16 +54,12 @@ class CheckDomainJob implements ShouldQueue
         $dom = new Document($domainResponse->body());
 
         if ($dom->has('meta[name=keywords]')) {
-            Log::info(dump($dom->find('meta[name=keywords]')));
             $data['keywords'] = $dom->find('meta[name=keywords]')[0]->getAttribute('content');
         }
         if ($dom->has('meta[name=description]')) {
-            Log::info(dump($dom->find('meta[name=description]')));
             $data['description'] = $dom->find('meta[name=description]')[0]->getAttribute('content');
         }
         if ($dom->has('h1')) {
-            Log::info('has h1');
-            Log::info(dump($dom->find('h1')));
             $data['h1'] = $dom->find('h1')[0]->text();
         }
 
@@ -89,7 +85,6 @@ class CheckDomainJob implements ShouldQueue
      */
     public function failed(Throwable $exception)
     {
-        Log::info(\dump($exception));
         DB::table(DomainCheckController::getTableName())
             ->where('id', $this->domainCheckId)
             ->update(['status' => 'failed']);
