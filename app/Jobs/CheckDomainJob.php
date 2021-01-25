@@ -52,7 +52,7 @@ class CheckDomainJob implements ShouldQueue
     {
         $domainResponse = Http::timeout(10)->get($this->domainName);
         $dom = new Document($domainResponse->body());
-
+        $data = [];
         if ($dom->has('meta[name=keywords]')) {
             $data['keywords'] = $dom->find('meta[name=keywords]')[0]->getAttribute('content');
         }

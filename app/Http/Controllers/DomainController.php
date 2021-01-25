@@ -44,7 +44,7 @@ class DomainController extends Controller
         $rules = [
             'domain.name' => [
                 'max:255',
-                function ($attribute, $value, $fail) {
+                function ($attribute, $value, $fail): void {
                     if (!$this->isValidUrl($value)) {
                         $fail('Url is invalid.');
                     }
@@ -65,9 +65,7 @@ class DomainController extends Controller
         $data['domain']['created_at'] = $currentTime;
         $data['domain']['updated_at'] = $currentTime;
         $newDomainId = DB::table(self::$tableName)->insertGetId($data['domain']);
-        if (\is_integer($newDomainId)) {
-            flash('Domain added successfully!')->success();
-        };
+        flash('Domain added successfully!')->success();
         return redirect()->route('domains.show', ['domain' => $newDomainId]);
     }
 
@@ -94,6 +92,6 @@ class DomainController extends Controller
 
     protected function isValidDomain(string $domain): bool
     {
-        return preg_match('/^(?!\-)(?:[a-zA-Z\d\-]{0,62}[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/', $domain);
+        return preg_match('/^(?!\-)(?:[a-zA-Z\d\-]{0,62}[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/', $domain) === 1;
     }
 }

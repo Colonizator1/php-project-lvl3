@@ -23,6 +23,7 @@ class DomainCheckController extends Controller
 
     public function store(Request $request, int $domainId): \Illuminate\Http\RedirectResponse
     {
+        $checkData = [];
         $checkData['domain_id'] = $domainId;
         $currentTime = Carbon::now()->toString();
         $checkData['created_at'] = $currentTime;
