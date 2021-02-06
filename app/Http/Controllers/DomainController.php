@@ -19,11 +19,18 @@ class DomainController extends Controller
 
     public function index(Request $request): \Illuminate\Contracts\View\View
     {
-        $allChecks = DB::table(DomainCheckController::getTableName())->get()->groupBy('domain_id')->map(function ($domainChecks, $domain_id) {
-            return $domainChecks->sortBy('created_at')->last();
-        });
-        $domains = DB::table(self::$tableName)->get()->map(function ($domain, $key) use ($allChecks) {
-            $domain->last_check = $allChecks->has($domain->id) ? $allChecks[$domain->id] : null;
+
+        $lastChecksIds = DB::table(DomainCheckController::getTableName())
+        ->select(DB::raw('max(id) as id'))
+        ->groupBy('domain_id')
+        ->pluck('id');
+
+        $lastChecks = DB::table(DomainCheckController::getTableName())
+        ->whereIn('id', $lastChecksIds)
+        ->get();
+
+        $domains = DB::table(self::$tableName)->get()->map(function ($domain, $key) use ($lastChecks) {
+            $domain->last_check = $lastChecks->contains('domain_id', $domain->id) ? $lastChecks->firstWhere('domain_id', $domain->id) : null;
             return $domain;
         });
         return view('domains.index', ['domains' => $domains]);
@@ -72,18 +79,16 @@ class DomainController extends Controller
     public function destroy(int $id): \Illuminate\Http\RedirectResponse
     {
         $domain = DB::table(self::$tableName)->where('id', $id);
-        if ($domain !== null) {
-            $domain->delete();
-            $domainChecks = DB::table(DomainCheckController::getTableName())->where('domain_id', $id)->delete();
-        }
+        $domain->delete();
+        $domainChecks = DB::table(DomainCheckController::getTableName())->where('domain_id', $id)->delete();
         return redirect()->route('domains.index');
     }
 
     protected function isValidUrl(string $url): bool
     {
-        $parse = parse_url($url);
-        if (isset($parse['host'])) {
-            $domain = $parse['host'];
+        $urlParts = parse_url($url);
+        if (isset($urlParts['host'])) {
+            $domain = $urlParts['host'];
         } else {
             $domain = explode('/', $url)[0];
         }

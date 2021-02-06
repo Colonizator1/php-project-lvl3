@@ -54,7 +54,7 @@
                             </td>
                             @break
                         @case('failed')
-                            <td colspan="4" class='alert alert-danger'>Сheck failed! Can't connect for 10 sec</td>
+                            <td colspan="4" class='alert alert-danger'>{{$check->error_msg}}</td>
                             @break
                         @default
                             <td>{{$check->status_code}}</td>

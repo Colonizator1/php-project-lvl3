@@ -85,12 +85,20 @@ class CheckDomainJob implements ShouldQueue
      */
     public function failed(Throwable $exception)
     {
+        $error = '';
+        if (strpos($exception->getMessage(), 'Connection timed out') !== false) {
+            $error = 'Domain check failed. Connection timed out!';
+        } elseif (strpos($exception->getMessage(), 'Could not resolve host') !== false) {
+            $error = 'Domain check failed. Site does not exist!';
+        } else {
+            $error = 'Domain check failed for an unknown reason.';
+        }
         DB::table(DomainCheckController::getTableName())
             ->where('id', $this->domainCheckId)
-            ->update(['status' => 'failed']);
+            ->update(['status' => 'failed', 'error_msg' => $error]);
         $domainCheck = DB::table(DomainCheckController::getTableName())->find($this->domainCheckId);
         if ($domainCheck !== null) {
-            flash('Domain check failed!')->success()->important();
+            flash($error)->success()->important();
         }
     }
 }
