@@ -22,7 +22,10 @@
         </tr>
     </table>
     <h2 class="mt-5 mb-3">Checks</h2>
-    {{ Form::open(['url' => route('domains.checks.store', optional($domain)->id)]) }}
+    @push('header_scripts')
+        <script src="{{ asset('/js/update-check-status.js')}}"></script>
+    @endpush
+    {{ Form::open(['url' => route('domains.checks.store', optional($domain)->id), null, 'onsubmit' => 'startObserver(this);']) }}
         <div class="form-row">
             <div class="col-12 col-md-3">
                 {{Form::hidden('domainName', optional($domain)->name)}}
