@@ -42,7 +42,7 @@ class DomainController extends Controller
         if ($domain === null) {
             abort(404);
         }
-        $domainChecks = DB::table(DomainCheckController::getTableName())->where('domain_id', $id)->get();
+        $domainChecks = DB::table(DomainCheckController::getTableName())->where('domain_id', $id)->orderBy('created_at')->get();
         return view('domains.show', ['domain' => $domain, 'domainChecks' => $domainChecks]);
     }
 
