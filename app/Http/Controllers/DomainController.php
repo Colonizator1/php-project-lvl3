@@ -50,6 +50,7 @@ class DomainController extends Controller
     {
         $rules = [
             'domain.name' => [
+                'required',
                 'max:255',
                 function ($attribute, $value, $fail): void {
                     if (!$this->isValidUrl($value)) {
@@ -59,6 +60,7 @@ class DomainController extends Controller
             ],
         ];
         $validator = Validator::make($request->all(), $rules, $messages = [
+            'required' => 'Please, fill out the url for check.',
             'max' => 'Url may not be greater than 255 characters.'
         ]);
         $duplicateDomain = DB::table(self::$tableName)->where('name', $request['domain']['name']);
