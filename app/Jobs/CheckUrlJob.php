@@ -60,7 +60,7 @@ class CheckUrlJob implements ShouldQueue
             $data['description'] = $dom->find('meta[name=description]')[0]->getAttribute('content');
         }
         if ($dom->has('h1')) {
-            $data['h1'] = $dom->first('h1')->toDocument()->text();
+            $data['h1'] = $dom->first('h1')->node->text();
         }
 
         $data['status_code'] = $urlResponse->status();
