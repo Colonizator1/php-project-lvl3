@@ -63,4 +63,14 @@ class UrlTest extends TestCase
 
         $this->assertDatabaseMissing(UrlController::getTableName(), ['id' => $urlInsertedId]);
     }
+    public function testAddExistingUrl(): void
+    {
+        $url = Factory::create()->url;
+        $data = ['url' => ['name' => $url]];
+        $firstRespons = $this->post(route('urls.store'), $data);
+        $firstResponsUrl = $firstRespons->getTargetUrl();
+        $secondResponse = $this->post(route('urls.store'), $data);
+        $secondResponse->assertSessionHasNoErrors();
+        $secondResponse->assertRedirect($firstResponsUrl);
+    }
 }
