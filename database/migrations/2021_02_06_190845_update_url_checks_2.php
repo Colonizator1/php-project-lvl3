@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateDomainChecks extends Migration
+class UpdateUrlChecks2 extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class UpdateDomainChecks extends Migration
      */
     public function up()
     {
-        Schema::table('domain_checks', function (Blueprint $table) {
-            $table->enum('status', ['success', 'failed', 'pending'])->default('success');
+        Schema::table('url_checks', function (Blueprint $table) {
+            $table->string('error_msg', 255)->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class UpdateDomainChecks extends Migration
      */
     public function down()
     {
-        Schema::table('domain_checks', function (Blueprint $table) {
-            $table->dropColumn('status');
+        Schema::table('url_checks', function (Blueprint $table) {
+            $table->dropColumn('error_msg');
         });
     }
 }

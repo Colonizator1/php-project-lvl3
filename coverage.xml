@@ -29,8 +29,8 @@
       </class>
       <metrics loc="13" ncloc="13" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
-    <file name="/home/art/learn/hello_laravel_heroku/app/Http/Controllers/DomainCheckController.php">
-      <class name="App\Http\Controllers\DomainCheckController" namespace="global">
+    <file name="/home/art/learn/hello_laravel_heroku/app/Http/Controllers/UrlCheckController.php">
+      <class name="App\Http\Controllers\UrlCheckController" namespace="global">
         <metrics complexity="2" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="11" elements="13" coveredelements="13"/>
       </class>
       <line num="19" type="method" name="getTableName" visibility="public" complexity="1" crap="1" count="4"/>
@@ -48,8 +48,8 @@
       <line num="36" type="stmt" count="1"/>
       <metrics loc="38" ncloc="38" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="11" elements="13" coveredelements="13"/>
     </file>
-    <file name="/home/art/learn/hello_laravel_heroku/app/Http/Controllers/DomainController.php">
-      <class name="App\Http\Controllers\DomainController" namespace="global">
+    <file name="/home/art/learn/hello_laravel_heroku/app/Http/Controllers/UrlController.php">
+      <class name="App\Http\Controllers\UrlController" namespace="global">
         <metrics complexity="12" methods="7" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="46" coveredstatements="44" elements="53" coveredelements="49"/>
       </class>
       <line num="15" type="method" name="getTableName" visibility="public" complexity="1" crap="1" count="5"/>
@@ -103,7 +103,7 @@
       <line num="86" type="stmt" count="0"/>
       <line num="88" type="stmt" count="1"/>
       <line num="90" type="stmt" count="1"/>
-      <line num="92" type="method" name="isValidDomain" visibility="protected" complexity="1" crap="1" count="1"/>
+      <line num="92" type="method" name="isValidUrl" visibility="protected" complexity="1" crap="1" count="1"/>
       <line num="94" type="stmt" count="1"/>
       <metrics loc="96" ncloc="96" classes="1" methods="7" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="46" coveredstatements="44" elements="53" coveredelements="49"/>
     </file>
@@ -173,8 +173,8 @@
       </class>
       <metrics loc="17" ncloc="12" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
-    <file name="/home/art/learn/hello_laravel_heroku/app/Jobs/CheckDomainJob.php">
-      <class name="App\Jobs\CheckDomainJob" namespace="global">
+    <file name="/home/art/learn/hello_laravel_heroku/app/Jobs/CheckUrlJob.php">
+      <class name="App\Jobs\CheckUrlJob" namespace="global">
         <metrics complexity="6" methods="3" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="23" coveredstatements="3" elements="26" coveredelements="4"/>
       </class>
       <line num="39" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="1"/>

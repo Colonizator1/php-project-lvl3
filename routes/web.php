@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DomainController;
-use App\Http\Controllers\DomainCheckController;
+use App\Http\Controllers\UrlController;
+use App\Http\Controllers\UrlCheckController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,8 +18,8 @@ Route::get('/', function (): Illuminate\View\View {
     return view('home');
 })->name('home');
 
-Route::resource('domains', DomainController::class)->except([
+Route::resource('urls', UrlController::class)->except([
    'create', 'update', 'edit'
 ]);
-Route::post('domains/{id}/checks', [DomainCheckController::class, 'store'])
-    ->name('domains.checks.store');
+Route::post('urls/{id}/checks', [UrlCheckController::class, 'store'])
+    ->name('urls.checks.store');

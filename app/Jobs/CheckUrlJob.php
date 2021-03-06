@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Http;
 use DiDom\Document;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\DomainCheckController;
+use App\Http\Controllers\UrlCheckController;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class CheckDomainJob implements ShouldQueue
+class CheckUrlJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -30,17 +30,17 @@ class CheckDomainJob implements ShouldQueue
      */
     public $tries = 3;
 
-    public String $domainName;
-    public Int $domainCheckId;
+    public String $urlName;
+    public Int $urlCheckId;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(string $domainName, int $domainCheckId)
+    public function __construct(string $urlName, int $urlCheckId)
     {
-        $this->domainName = $domainName;
-        $this->domainCheckId = $domainCheckId;
+        $this->urlName = $urlName;
+        $this->urlCheckId = $urlCheckId;
     }
 
     /**
@@ -50,8 +50,8 @@ class CheckDomainJob implements ShouldQueue
      */
     public function handle()
     {
-        $domainResponse = Http::timeout(10)->get($this->domainName);
-        $dom = new Document($domainResponse->body());
+        $urlResponse = Http::timeout(10)->get($this->urlName);
+        $dom = new Document($urlResponse->body());
         $data = [];
         if ($dom->has('meta[name=keywords]')) {
             $data['keywords'] = $dom->find('meta[name=keywords]')[0]->getAttribute('content');
@@ -63,17 +63,17 @@ class CheckDomainJob implements ShouldQueue
             $data['h1'] = $dom->find('h1')[0]->text();
         }
 
-        $data['status_code'] = $domainResponse->status();
+        $data['status_code'] = $urlResponse->status();
         $currentTime = Carbon::now()->toString();
         $data['updated_at'] = $currentTime;
         $data['status'] = 'success';
 
-        DB::table(DomainCheckController::getTableName())
-            ->where('id', $this->domainCheckId)
+        DB::table(UrlCheckController::getTableName())
+            ->where('id', $this->urlCheckId)
             ->update($data);
-        $domainCheck = DB::table(DomainCheckController::getTableName())->find($this->domainCheckId);
-        if ($domainCheck !== null) {
-            flash('Domain checked successfully!')->success()->important();
+        $urlCheck = DB::table(UrlCheckController::getTableName())->find($this->urlCheckId);
+        if ($urlCheck !== null) {
+            flash('Url checked successfully!')->success()->important();
         }
     }
 
@@ -87,17 +87,17 @@ class CheckDomainJob implements ShouldQueue
     {
         $error = '';
         if (strpos($exception->getMessage(), 'Connection timed out') !== false) {
-            $error = 'Domain check failed. Connection timed out!';
+            $error = 'Url check failed. Connection timed out!';
         } elseif (strpos($exception->getMessage(), 'Could not resolve host') !== false) {
-            $error = 'Domain check failed. Site does not exist!';
+            $error = 'Url check failed. Site does not exist!';
         } else {
-            $error = 'Domain check failed for an unknown reason.';
+            $error = 'Url check failed for an unknown reason.';
         }
-        DB::table(DomainCheckController::getTableName())
-            ->where('id', $this->domainCheckId)
+        DB::table(UrlCheckController::getTableName())
+            ->where('id', $this->urlCheckId)
             ->update(['status' => 'failed', 'error_msg' => $error]);
-        $domainCheck = DB::table(DomainCheckController::getTableName())->find($this->domainCheckId);
-        if ($domainCheck !== null) {
+        $urlCheck = DB::table(UrlCheckController::getTableName())->find($this->urlCheckId);
+        if ($urlCheck !== null) {
             flash($error)->success()->important();
         }
     }

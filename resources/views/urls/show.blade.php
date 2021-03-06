@@ -1,36 +1,36 @@
 @extends('layouts.app')
 
 @section('title')
-    Url {{optional($domain)->name}}
+    Url {{optional($url)->name}}
 @endsection
 
 @section('content')
 <div class="container-lg">
-    <h1 class="mt-5 mb-3">Url: {{optional($domain)->name}}</h1>
+    <h1 class="mt-5 mb-3">Url: {{optional($url)->name}}</h1>
     <table class="table table-hover">
         <tr>
-            <td>id</td><td>{{optional($domain)->id}}</td>
+            <td>id</td><td>{{optional($url)->id}}</td>
         </tr>
         <tr>
-            <td>url</td><td>{{optional($domain)->name}}</td>
+            <td>url</td><td>{{optional($url)->name}}</td>
         </tr>
         <tr>
-            <td>created_at</td><td>{{optional($domain)->created_at}}</td>
+            <td>created_at</td><td>{{optional($url)->created_at}}</td>
         </tr>
         <tr>
-            <td>updated_at</td><td>{{optional($domain)->updated_at}}</td>
+            <td>updated_at</td><td>{{optional($url)->updated_at}}</td>
         </tr>
     </table>
     <h2 class="mt-5 mb-3">Checks</h2>
-    {{ Form::open(['url' => route('domains.checks.store', optional($domain)->id)]) }}
+    {{ Form::open(['url' => route('urls.checks.store', optional($url)->id)]) }}
         <div class="form-row">
             <div class="col-12 col-md-3">
-                {{Form::hidden('domainName', optional($domain)->name)}}
+                {{Form::hidden('urlName', optional($url)->name)}}
                 {{Form::submit('Run check', ['class' => 'btn btn-block btn-lg btn-primary'])}}
             </div>
         </div>
     {{ Form::close() }}
-    @if (isset($domainChecks) && count($domainChecks) > 0)
+    @if (isset($urlChecks) && count($urlChecks) > 0)
         @push('header_scripts')
             <script src="{{ asset('/js/update-check-status.js')}}"></script>
         @endpush
@@ -47,7 +47,7 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach($domainChecks as $check)
+            @foreach($urlChecks as $check)
                 <tr id="check-id-{{$check->id}}" data-status="{{$check->status}}" data-id="{{$check->id}}">
                     <td>{{$check->id}}</td>
                     @switch($check->status)
