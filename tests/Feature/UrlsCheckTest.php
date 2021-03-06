@@ -17,7 +17,7 @@ class UrlsCheckTest extends TestCase
     public function testStore(): void
     {
         Queue::fake();
-        $urlName = Faker::create()->url();
+        $urlName = Faker::create()->url;
         $urlInsertedId = DB::table(UrlController::getTableName())->insertGetId([
             'name' => $urlName,
         ]);

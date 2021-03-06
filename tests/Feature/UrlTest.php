@@ -22,7 +22,7 @@ class UrlTest extends TestCase
     public function testShow(): void
     {
         $urlInsertedId = DB::table(UrlController::getTableName())->insertGetId([
-            'name' => Factory::create()->url(),
+            'name' => Factory::create()->url,
         ]);
         $response = $this->get(route('urls.show', ['url' => $urlInsertedId]));
         $response->assertOk();
@@ -31,8 +31,8 @@ class UrlTest extends TestCase
     {
         $data = [];
         for ($i = 0; $i < 10; $i++) {
-            $data[] = ['name' => Factory::create()->url()];
-            $data[] = ['name' => Factory::create()->url()];
+            $data[] = ['name' => Factory::create()->url];
+            $data[] = ['name' => Factory::create()->url];
         }
         DB::table(UrlController::getTableName())->insert($data);
         $response = $this->get(route('urls.index'));
@@ -44,7 +44,7 @@ class UrlTest extends TestCase
 
     public function testStore(): void
     {
-        $data = ['url' => ['name' => Factory::create()->url()]];
+        $data = ['url' => ['name' => Factory::create()->url]];
         $response = $this->post(route('urls.store'), $data);
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
@@ -55,7 +55,7 @@ class UrlTest extends TestCase
     public function testDestroy(): void
     {
         $urlInsertedId = DB::table(UrlController::getTableName())->insertGetId([
-            'name' => Factory::create()->url(),
+            'name' => Factory::create()->url,
         ]);
         $response = $this->delete(route('urls.destroy', [$urlInsertedId]));
         $response->assertSessionHasNoErrors();
