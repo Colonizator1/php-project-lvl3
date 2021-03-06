@@ -49,7 +49,7 @@ class UrlController extends Controller
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $preparedRequest = $request->all();
-        if (!$this->isUrlHasProtocol($request['url']['name'])) {
+        if ($request['url']['name'] !== null && !$this->isUrlHasProtocol($request['url']['name'])) {
             $preparedRequest['url']['name'] = 'http://' . $request['url']['name'];
         }
         $rules = [
