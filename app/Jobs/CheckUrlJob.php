@@ -61,7 +61,7 @@ class CheckUrlJob implements ShouldQueue
         }
         if ($dom->has('h1')) {
             /* Spagetti code for pass hexlet autotests */
-            $h1 = $dom->first('h1') . '';
+            $h1 = $dom->first('h1');
             $patterns = ['/<h1(.*?)>/','/<\/h1>/'];
             $readyH1 = preg_replace($patterns, '', $h1);
             $data['h1'] = $readyH1;
