@@ -60,11 +60,10 @@ class CheckUrlJob implements ShouldQueue
             $data['description'] = $dom->find('meta[name=description]')[0]->getAttribute('content');
         }
         if ($dom->has('h1')) {
-            /* Spagetti code for pass hexlet autotests */
+            /** @var \DiDom\Document $h1 */
             $h1 = $dom->first('h1');
-            $patterns = ['/<h1(.*?)>/','/<\/h1>/'];
-            $readyH1 = preg_replace($patterns, '', $h1);
-            $data['h1'] = $readyH1;
+            $h1Text = $h1->text();
+            $data['h1'] = $h1Text;
         }
 
         $data['status_code'] = $urlResponse->status();
